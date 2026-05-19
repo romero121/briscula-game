@@ -26,13 +26,37 @@ export function GameTable({
 
   return (
     <div
-      className="relative grid w-full gap-3 p-3 sm:p-4 lg:grid-cols-[1fr_19rem]"
+      className="relative w-full p-2 sm:p-4"
       style={{ minHeight: "100svh", height: "100svh" }}
     >
-      {/* MAIN: table felt with opponent hand on top, played cards in
-          the middle (with the deck/trump pile pinned to the corner),
-          and the player's hand pinned to the bottom. */}
-      <main className="relative flex min-h-0 min-w-0 flex-col gap-2">
+      {/* Wooden table frame */}
+      <div
+        className="relative flex h-full w-full flex-col gap-2 rounded-[26px] p-2 sm:gap-3 sm:p-4"
+        style={{
+          background:
+            "linear-gradient(135deg,#6a4424 0%,#3d2310 45%,#4a2c14 60%,#6a4424 100%)",
+          boxShadow:
+            "inset 0 0 0 2px rgba(232,200,140,0.28),inset 0 0 0 6px rgba(28,14,4,0.55),inset 0 0 38px rgba(0,0,0,0.55),0 30px 60px -22px rgba(0,0,0,0.85)",
+        }}
+      >
+        {/* Small variant title in the top-left of the frame for context. */}
+        <div className="pointer-events-none absolute left-4 top-3 z-20 hidden sm:block">
+          <p className="text-[10px] uppercase tracking-[0.35em] text-gold/70">
+            {VARIANT_LABELS[variant]}
+          </p>
+        </div>
+
+        {/* Compact status overlay — top-right of the table. */}
+        <div className="pointer-events-none absolute right-2 top-2 z-20 hidden sm:block">
+          <SidePanel
+            state={state}
+            notice={game.notice}
+            onNewGame={onNewGame}
+            onMenu={onMenu}
+          />
+        </div>
+
+        {/* Mobile compact strip (replaces the corner overlay on phones). */}
         <MobileStatusStrip
           variant={variant}
           state={state}
@@ -41,18 +65,31 @@ export function GameTable({
           onNewGame={onNewGame}
         />
 
-        <OpponentHand count={state.hands[1].length} dealing={game.dealing} />
+        {/* CPU hand, compact, top of felt. Right padding on sm+ leaves
+            room for the corner status overlay. */}
+        <div className="sm:pr-[212px]">
+          <OpponentHand
+            cards={state.hands[1]}
+            variant={variant}
+            dealing={game.dealing}
+          />
+        </div>
 
+        {/* The felt: deck/trump pinned in the corner, played cards in
+            the center. The felt is the visual centre of gravity. */}
         <section
-          className="relative min-h-[22vh] flex-1 overflow-hidden rounded-3xl"
+          className="relative min-h-[22vh] flex-1 overflow-hidden rounded-2xl"
           style={{
             background:
-              "radial-gradient(ellipse at center,var(--felt) 0%,var(--felt-edge) 100%)",
+              "radial-gradient(ellipse at 50% 38%,#1a6a52 0%,#0e4a38 55%,#073525 100%)," +
+              "repeating-radial-gradient(circle at 50% 50%,rgba(255,255,255,0.012) 0 2px,transparent 2px 7px)",
             boxShadow:
-              "inset 0 0 60px rgba(0,0,0,0.5), inset 0 0 0 2px rgba(217,180,106,0.3)",
+              "inset 0 0 0 1px rgba(217,180,106,0.32)," +
+              "inset 0 0 0 4px rgba(20,8,4,0.55)," +
+              "inset 0 0 90px rgba(0,0,0,0.55)",
           }}
         >
-          <div className="absolute left-3 top-3 sm:left-4 sm:top-4">
+          <div className="absolute left-3 top-3 z-10 sm:left-5 sm:top-5">
             <DeckPile
               variant={variant}
               stockCount={state.stock.length}
@@ -62,23 +99,16 @@ export function GameTable({
           <TrickArea state={state} resolving={game.resolving} />
         </section>
 
+        {/* Player hand, suit-grouped, slightly fanned. */}
         <PlayerHand
           cards={state.hands[0]}
+          variant={variant}
           legalIds={game.legalIds}
           canPlay={game.humanCanPlay}
           dealing={game.dealing}
           onPlay={game.playHuman}
         />
-      </main>
-
-      <aside className="hidden min-h-0 lg:block">
-        <SidePanel
-          state={state}
-          notice={game.notice}
-          onNewGame={onNewGame}
-          onMenu={onMenu}
-        />
-      </aside>
+      </div>
 
       {finished && (
         <GameOverScreen
@@ -94,9 +124,8 @@ export function GameTable({
 }
 
 /**
- * Compact status strip shown on phones / tablets where the right-hand
- * SidePanel is hidden. Same critical info (variant, scores, turn, adut)
- * plus the table buttons, in a single horizontal bar.
+ * Phone-sized status: scores + turn + tiny buttons in one strip.
+ * Hidden at `sm` and up where the corner overlay takes over.
  */
 function MobileStatusStrip({
   variant,
@@ -115,41 +144,48 @@ function MobileStatusStrip({
     state.phase === "finished"
       ? "Kraj"
       : state.turn === 0
-        ? "Tvoj potez"
+        ? "Ti igraš"
         : `${state.players[1].name}…`;
 
   return (
-    <div className="lg:hidden flex items-center justify-between gap-2 rounded-xl border border-gold/25 bg-sea-deep/60 px-3 py-2 backdrop-blur-sm">
-      <div className="flex items-center gap-3 min-w-0">
-        <span className="truncate font-display text-base text-gold-gradient">
+    <div
+      className="flex items-center justify-between gap-2 rounded-lg px-2.5 py-1.5 text-cream sm:hidden"
+      style={{
+        background: "rgba(20,8,4,0.65)",
+        boxShadow:
+          "inset 0 0 0 1px rgba(217,180,106,0.3),inset 0 0 0 2px rgba(60,30,12,0.55)",
+      }}
+    >
+      <div className="flex items-center gap-2 min-w-0">
+        <span className="truncate font-display text-xs text-gold-gradient">
           {VARIANT_LABELS[variant]}
         </span>
         <span className="text-sm text-cream">
-          <span className="text-gold-gradient font-display text-lg">
+          <span className="text-gold-gradient font-display text-base">
             {state.scores[0]}
           </span>
           <span className="mx-1 text-cream/40">:</span>
-          <span className="font-display text-lg">{state.scores[1]}</span>
+          <span className="font-display text-base">{state.scores[1]}</span>
         </span>
-        <span className="hidden text-[10px] uppercase tracking-wider text-cream/60 sm:inline">
-          cilj {POINTS_TO_WIN + 1}
+        <span className="hidden text-[10px] uppercase tracking-wider text-cream/55 xs:inline">
+          do {POINTS_TO_WIN + 1}
         </span>
       </div>
-      <div className="flex items-center gap-2">
-        <span className="rounded-full bg-sea-mid/60 px-2 py-0.5 text-[11px] text-cream/85">
+      <div className="flex items-center gap-1.5">
+        <span className="truncate rounded-full bg-black/30 px-2 py-0.5 text-[11px] text-cream/85 ring-1 ring-gold/20">
           {notice ?? turn}
         </span>
         <button
           onClick={onNewGame}
           aria-label="Nova partija"
-          className="rounded-full border border-gold/40 px-2 py-1 text-[11px] text-cream"
+          className="rounded-full border border-gold/40 px-2 py-0.5 text-[11px] text-cream"
         >
           ↻
         </button>
         <button
           onClick={onMenu}
           aria-label="Glavni izbornik"
-          className="rounded-full border border-gold/40 px-2 py-1 text-[11px] text-cream"
+          className="rounded-full border border-gold/40 px-2 py-0.5 text-[11px] text-cream"
         >
           ☰
         </button>
