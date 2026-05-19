@@ -1,13 +1,18 @@
 "use client";
 
+import type { CSSProperties } from "react";
+
 import type { GameState } from "@/lib/games";
 
 import { CardSprite } from "../cards/CardSprite";
 
 /**
- * The felt centre. While a trick is in progress it shows the live table;
- * during the post-trick freeze it shows the finished trick with the
- * winner's card highlighted.
+ * Played cards in the centre of the felt. While a trick is in progress
+ * shows the live table; during the post-trick freeze shows the finished
+ * trick with the winner's card highlighted.
+ *
+ * Pure presentation — no felt background, no deck. Those live on the
+ * GameTable so this stays trivially reusable.
  */
 export function TrickArea({
   state,
@@ -25,30 +30,34 @@ export function TrickArea({
   const winner =
     resolving && state.lastTrick ? state.lastTrick.winner : null;
 
+  const cssVars = {
+    "--played-w": "clamp(72px, 11vw, 132px)",
+  } as CSSProperties;
+
   return (
     <div
-      className="relative flex w-full flex-1 items-center justify-center rounded-3xl"
-      style={{
-        background:
-          "radial-gradient(ellipse at center,var(--felt) 0%,var(--felt-edge) 100%)",
-        boxShadow:
-          "inset 0 0 60px rgba(0,0,0,0.5), inset 0 0 0 2px rgba(217,180,106,0.3)",
-        minHeight: "34vh",
-      }}
+      className="relative flex h-full w-full items-center justify-center"
+      style={cssVars}
     >
+      {winner !== null && (
+        <div className="absolute bottom-2 left-1/2 z-10 -translate-x-1/2 rounded-full bg-sea-deep/85 px-4 py-1 text-xs text-gold ring-1 ring-gold/40 animate-fade-up">
+          Trik osvaja {state.players[winner].name}
+          {state.lastTrick ? ` (+${state.lastTrick.points})` : ""}
+        </div>
+      )}
       {showing.length === 0 ? (
-        <p className="px-6 text-center font-display text-lg text-cream/45">
+        <p className="px-6 text-center font-display text-base text-cream/45 sm:text-lg">
           {state.players[state.turn]?.kind === "cpu"
             ? "Protivnik razmišlja…"
             : "Na potezu si — odigraj kartu"}
         </p>
       ) : (
-        <div className="flex items-center gap-4 sm:gap-8">
+        <div className="flex items-center gap-3 sm:gap-6">
           {showing.map((p) => (
             <div
               key={p.card.id}
               className="animate-play"
-              style={{ width: "clamp(64px,17vw,128px)" }}
+              style={{ width: "var(--played-w)" }}
             >
               <CardSprite
                 card={p.card}
@@ -59,13 +68,6 @@ export function TrickArea({
               </p>
             </div>
           ))}
-        </div>
-      )}
-
-      {winner !== null && (
-        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full bg-sea-deep/80 px-4 py-1 text-xs text-gold animate-fade-up">
-          Trik osvaja {state.players[winner].name}
-          {state.lastTrick ? ` (+${state.lastTrick.points})` : ""}
         </div>
       )}
     </div>
