@@ -3,6 +3,9 @@
  * All sheet geometry comes from cardsConfig — this component contains
  * zero magic numbers. Sizing is driven by the parent (fills width,
  * keeps the deck's aspect ratio), so it stays crisp and responsive.
+ *
+ * Visual style: subtle, like a real card in soft light. A faint dark
+ * edge and a soft shadow — no gold outlines, no glow.
  */
 import type { CSSProperties } from "react";
 
@@ -14,7 +17,7 @@ import { cardLabel, type Card } from "@/lib/cards/types";
 
 export interface CardSpriteProps {
   card: Card;
-  /** Legal-move glow. */
+  /** Legal-move hint — a soft lift, no neon. */
   highlight?: boolean;
   /** Greyed out (illegal / not playable now). */
   dimmed?: boolean;
@@ -52,22 +55,23 @@ export function CardSprite({
           : undefined
       }
       className={[
-        "relative select-none rounded-[7%] bg-cream",
-        "ring-1 ring-black/30 shadow-[0_6px_14px_-4px_rgba(0,0,0,0.55)]",
-        "transition-transform transition-shadow duration-200",
+        "relative select-none rounded-[6%] bg-[#f3ead4]",
+        "ring-1 ring-black/35",
+        "transition-transform duration-200 ease-out",
         interactive
-          ? "cursor-pointer hover:-translate-y-2 focus-visible:-translate-y-2 outline-none"
+          ? "cursor-pointer outline-none hover:-translate-y-2 focus-visible:-translate-y-2"
           : "",
-        highlight
-          ? "ring-2 ring-gold shadow-[0_0_0_3px_rgba(217,180,106,0.45),0_8px_18px_-4px_rgba(0,0,0,0.6)]"
-          : "",
-        dimmed ? "opacity-45 saturate-50" : "",
+        highlight ? "-translate-y-1" : "",
+        dimmed ? "opacity-50 saturate-50" : "",
         className,
       ]
         .filter(Boolean)
         .join(" ")}
       style={{
         aspectRatio: String(cardAspectRatio()),
+        boxShadow: highlight
+          ? "0 10px 16px -8px rgba(0,0,0,0.55),0 0 0 1px rgba(40,28,10,0.45)"
+          : "0 4px 9px -4px rgba(0,0,0,0.55)",
         ...sprite,
         ...style,
       }}

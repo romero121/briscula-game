@@ -40,16 +40,16 @@ export function TrickArea({
       style={cssVars}
     >
       {winner !== null && (
-        <div className="absolute bottom-2 left-1/2 z-10 -translate-x-1/2 rounded-full bg-sea-deep/85 px-4 py-1 text-xs text-gold ring-1 ring-gold/40 animate-fade-up">
+        <div className="absolute bottom-2 left-1/2 z-10 -translate-x-1/2 rounded-full bg-black/55 px-3 py-0.5 text-[11px] text-cream/85 animate-fade-up">
           Trik osvaja {state.players[winner].name}
-          {state.lastTrick ? ` (+${state.lastTrick.points})` : ""}
+          {state.lastTrick ? ` · +${state.lastTrick.points}` : ""}
         </div>
       )}
       {showing.length === 0 ? (
-        <p className="px-6 text-center font-display text-base text-cream/45 sm:text-lg">
+        <p className="px-6 text-center font-display text-sm italic text-cream/35 sm:text-base">
           {state.players[state.turn]?.kind === "cpu"
-            ? "Protivnik razmišlja…"
-            : "Na potezu si — odigraj kartu"}
+            ? "protivnik razmišlja…"
+            : "tvoj potez"}
         </p>
       ) : (
         <div className="flex items-center gap-3 sm:gap-6">

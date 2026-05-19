@@ -29,24 +29,27 @@ export function GameTable({
       className="relative w-full p-2 sm:p-4"
       style={{ minHeight: "100svh", height: "100svh" }}
     >
-      {/* Wooden table frame */}
+      {/* The table itself: weathered wood frame holding the felt. */}
       <div
-        className="relative flex h-full w-full flex-col gap-2 rounded-[26px] p-2 sm:gap-3 sm:p-4"
+        className="skin-wood relative flex h-full w-full flex-col gap-2 rounded-xl p-2 sm:gap-3 sm:rounded-2xl sm:p-4"
         style={{
-          background:
-            "linear-gradient(135deg,#6a4424 0%,#3d2310 45%,#4a2c14 60%,#6a4424 100%)",
           boxShadow:
-            "inset 0 0 0 2px rgba(232,200,140,0.28),inset 0 0 0 6px rgba(28,14,4,0.55),inset 0 0 38px rgba(0,0,0,0.55),0 30px 60px -22px rgba(0,0,0,0.85)",
+            "inset 0 0 0 1px rgba(200,167,102,0.18)," +
+            "inset 0 0 0 5px rgba(20,11,4,0.6)," +
+            "inset 0 0 60px rgba(0,0,0,0.55)," +
+            "0 22px 50px -20px rgba(0,0,0,0.85)",
         }}
       >
-        {/* Small variant title in the top-left of the frame for context. */}
-        <div className="pointer-events-none absolute left-4 top-3 z-20 hidden sm:block">
-          <p className="text-[10px] uppercase tracking-[0.35em] text-gold/70">
+        <div className="pointer-events-none absolute left-4 top-2 z-20 hidden sm:block">
+          <p
+            className="font-display text-[11px] uppercase tracking-[0.32em] text-gold-soft"
+            style={{ opacity: 0.65 }}
+          >
             {VARIANT_LABELS[variant]}
           </p>
         </div>
 
-        {/* Compact status overlay — top-right of the table. */}
+        {/* Small status overlay — top-right of the table. */}
         <div className="pointer-events-none absolute right-2 top-2 z-20 hidden sm:block">
           <SidePanel
             state={state}
@@ -56,7 +59,6 @@ export function GameTable({
           />
         </div>
 
-        {/* Mobile compact strip (replaces the corner overlay on phones). */}
         <MobileStatusStrip
           variant={variant}
           state={state}
@@ -65,9 +67,8 @@ export function GameTable({
           onNewGame={onNewGame}
         />
 
-        {/* CPU hand, compact, top of felt. Right padding on sm+ leaves
-            room for the corner status overlay. */}
-        <div className="sm:pr-[212px]">
+        {/* CPU hand. Right padding on sm+ leaves space for the overlay. */}
+        <div className="sm:pr-[200px]">
           <OpponentHand
             cards={state.hands[1]}
             variant={variant}
@@ -75,18 +76,14 @@ export function GameTable({
           />
         </div>
 
-        {/* The felt: deck/trump pinned in the corner, played cards in
-            the center. The felt is the visual centre of gravity. */}
+        {/* Felt: deck + trump anchored top-left, played cards centred. */}
         <section
-          className="relative min-h-[22vh] flex-1 overflow-hidden rounded-2xl"
+          className="skin-felt relative min-h-[22vh] flex-1 overflow-hidden rounded-lg sm:rounded-xl"
           style={{
-            background:
-              "radial-gradient(ellipse at 50% 38%,#1a6a52 0%,#0e4a38 55%,#073525 100%)," +
-              "repeating-radial-gradient(circle at 50% 50%,rgba(255,255,255,0.012) 0 2px,transparent 2px 7px)",
             boxShadow:
-              "inset 0 0 0 1px rgba(217,180,106,0.32)," +
-              "inset 0 0 0 4px rgba(20,8,4,0.55)," +
-              "inset 0 0 90px rgba(0,0,0,0.55)",
+              "inset 0 0 0 1px rgba(0,0,0,0.45)," +
+              "inset 0 0 0 6px rgba(20,11,4,0.45)," +
+              "inset 0 0 70px rgba(0,0,0,0.55)",
           }}
         >
           <div className="absolute left-3 top-3 z-10 sm:left-5 sm:top-5">
@@ -99,7 +96,6 @@ export function GameTable({
           <TrickArea state={state} resolving={game.resolving} />
         </section>
 
-        {/* Player hand, suit-grouped, slightly fanned. */}
         <PlayerHand
           cards={state.hands[0]}
           variant={variant}
@@ -124,8 +120,8 @@ export function GameTable({
 }
 
 /**
- * Phone-sized status: scores + turn + tiny buttons in one strip.
- * Hidden at `sm` and up where the corner overlay takes over.
+ * Phone-sized status strip. Same data as the corner overlay, in one
+ * compact horizontal bar. Hidden at `sm` and up.
  */
 function MobileStatusStrip({
   variant,
@@ -148,20 +144,13 @@ function MobileStatusStrip({
         : `${state.players[1].name}…`;
 
   return (
-    <div
-      className="flex items-center justify-between gap-2 rounded-lg px-2.5 py-1.5 text-cream sm:hidden"
-      style={{
-        background: "rgba(20,8,4,0.65)",
-        boxShadow:
-          "inset 0 0 0 1px rgba(217,180,106,0.3),inset 0 0 0 2px rgba(60,30,12,0.55)",
-      }}
-    >
-      <div className="flex items-center gap-2 min-w-0">
-        <span className="truncate font-display text-xs text-gold-gradient">
+    <div className="skin-overlay flex items-center justify-between gap-2 rounded-md px-2.5 py-1.5 text-cream sm:hidden">
+      <div className="flex min-w-0 items-center gap-2">
+        <span className="truncate font-display text-xs text-gold-soft">
           {VARIANT_LABELS[variant]}
         </span>
-        <span className="text-sm text-cream">
-          <span className="text-gold-gradient font-display text-base">
+        <span className="text-sm">
+          <span className="font-display text-base text-gold-soft">
             {state.scores[0]}
           </span>
           <span className="mx-1 text-cream/40">:</span>
@@ -172,20 +161,20 @@ function MobileStatusStrip({
         </span>
       </div>
       <div className="flex items-center gap-1.5">
-        <span className="truncate rounded-full bg-black/30 px-2 py-0.5 text-[11px] text-cream/85 ring-1 ring-gold/20">
+        <span className="truncate rounded-full bg-black/30 px-2 py-0.5 text-[11px] text-cream/85">
           {notice ?? turn}
         </span>
         <button
           onClick={onNewGame}
           aria-label="Nova partija"
-          className="rounded-full border border-gold/40 px-2 py-0.5 text-[11px] text-cream"
+          className="rounded-full border border-gold/30 px-2 py-0.5 text-[11px] text-cream"
         >
           ↻
         </button>
         <button
           onClick={onMenu}
           aria-label="Glavni izbornik"
-          className="rounded-full border border-gold/40 px-2 py-0.5 text-[11px] text-cream"
+          className="rounded-full border border-gold/30 px-2 py-0.5 text-[11px] text-cream"
         >
           ☰
         </button>

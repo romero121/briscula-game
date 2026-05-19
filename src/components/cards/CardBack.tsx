@@ -1,11 +1,13 @@
 /**
- * Card back. The artwork sheet has no back design, so this is a styled
- * element — a deep-sea panel with a woven gold lattice, matching the
- * Mediterranean theme. Same aspect ratio as a real card.
+ * Card back. If a traditional back image is configured (cardBackSrc in
+ * cardsConfig.ts), it is rendered directly with only a soft shadow.
+ * Otherwise we fall back to a quiet, muted CSS design — no gold border,
+ * no neon, no gloss. The goal is "old card on a table", not "polished
+ * UI tile".
  */
 import type { CSSProperties } from "react";
 
-import { cardAspectRatio } from "@/lib/cards/cardsConfig";
+import { SPRITE_SHEET, cardAspectRatio } from "@/lib/cards/cardsConfig";
 
 export function CardBack({
   className = "",
@@ -14,34 +16,42 @@ export function CardBack({
   className?: string;
   style?: CSSProperties;
 }) {
+  const ar = String(cardAspectRatio());
+  const shadow = "0 3px 7px -2px rgba(0,0,0,0.55)";
+
+  if (SPRITE_SHEET.cardBackSrc) {
+    return (
+      <div
+        aria-label="Karta okrenuta naličjem"
+        className={`rounded-[6%] ${className}`}
+        style={{
+          aspectRatio: ar,
+          backgroundImage: `url("${SPRITE_SHEET.cardBackSrc}")`,
+          backgroundSize: "100% 100%",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          boxShadow: shadow,
+          ...style,
+        }}
+      />
+    );
+  }
+
+  // Quiet fallback: deep wine red with a faint diagonal weave. Looks
+  // close enough to an old worn back; can be swapped for the real image
+  // by setting cardBackSrc in cardsConfig.
   return (
     <div
       aria-label="Karta okrenuta naličjem"
-      className={[
-        "rounded-[7%] ring-1 ring-black/40",
-        "shadow-[0_6px_14px_-4px_rgba(0,0,0,0.55)]",
-        className,
-      ]
-        .filter(Boolean)
-        .join(" ")}
+      className={`rounded-[6%] ${className}`}
       style={{
-        aspectRatio: String(cardAspectRatio()),
+        aspectRatio: ar,
         background:
-          "repeating-linear-gradient(45deg,#0b3a5b 0 8px,#0e4870 8px 16px)",
-        boxShadow:
-          "inset 0 0 0 2px rgba(217,180,106,0.55), inset 0 0 0 7px #06243b",
+          "linear-gradient(180deg,#4a1414 0%,#2c0a0a 100%)," +
+          "repeating-linear-gradient(45deg,rgba(0,0,0,0.12) 0 3px,transparent 3px 7px)",
+        boxShadow: `${shadow}, inset 0 0 0 1px rgba(0,0,0,0.45)`,
         ...style,
       }}
-    >
-      <div
-        className="h-full w-full rounded-[7%]"
-        style={{
-          backgroundImage:
-            "radial-gradient(circle, rgba(217,180,106,0.55) 1.5px, transparent 1.6px)",
-          backgroundSize: "14px 14px",
-          backgroundPosition: "center",
-        }}
-      />
-    </div>
+    />
   );
 }

@@ -79,7 +79,7 @@ export function DeckPile({
           <div className="absolute inset-0">
             <CardBack />
           </div>
-          <span className="absolute -bottom-1 -right-1 rounded-md bg-black/80 px-1.5 py-0.5 text-[10px] font-semibold text-gold ring-1 ring-gold/40">
+          <span className="absolute -bottom-1 -right-1 rounded bg-black/70 px-1.5 py-0.5 text-[10px] text-cream/85">
             {stockCount}
           </span>
         </div>

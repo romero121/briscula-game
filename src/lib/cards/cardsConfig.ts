@@ -33,6 +33,13 @@ export interface SpriteSheetConfig {
   suitRowOrder: Suit[];
   /** Rank per column, left → right. */
   rankColumnOrder: Rank[];
+  /**
+   * Optional path (under /public) to a traditional card-back image.
+   * When set, `<CardBack>` renders this image instead of the muted CSS
+   * fallback. Drop your back image into /public/cards/ and write the
+   * path here — nothing else needs to change.
+   */
+  cardBackSrc?: string;
 }
 
 /**
@@ -62,6 +69,10 @@ export const SPRITE_SHEET: SpriteSheetConfig = {
     "quattro",
     "due",
   ],
+  // To use a traditional back image, drop it into /public/cards/ and
+  // uncomment / edit the line below, e.g.:
+  //   cardBackSrc: "/cards/card-back.png",
+  cardBackSrc: undefined,
 };
 
 export interface SpriteCell {

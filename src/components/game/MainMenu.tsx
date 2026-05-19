@@ -42,54 +42,52 @@ export function MainMenu({
   onSelect: (variant: GameVariant) => void;
 }) {
   return (
-    <div className="mx-auto flex w-full max-w-4xl flex-1 flex-col items-center justify-center px-4 py-10">
-      <p className="text-xs uppercase tracking-[0.4em] text-gold/70">
-        Dalmatinske karte · solo protiv računala
+    <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col items-center justify-center px-4 py-10">
+      <p className="text-[10px] uppercase tracking-[0.45em] text-gold-soft/75">
+        Dalmatinske karte · protiv računala
       </p>
-      <h1 className="mt-3 text-center font-display text-5xl text-gold-gradient sm:text-6xl">
+      <h1 className="mt-3 text-center font-display text-4xl text-gold-soft sm:text-5xl">
         Briscula &amp; Tresetta
       </h1>
-      <p className="mt-3 max-w-md text-center text-cream/65">
-        Tradicionalne talijansko-dalmatinske igre s 40 karata. Odaberi
-        igru i započni partiju.
+      <p className="mt-3 max-w-md text-center text-sm text-cream/65">
+        Tradicionalne talijansko-dalmatinske igre s 40 karata.
       </p>
 
-      <div className="mt-10 grid w-full gap-5 sm:grid-cols-2">
+      <div className="mt-8 grid w-full gap-4 sm:grid-cols-2">
         {GAMES.map((g) => (
           <button
             key={g.variant}
             onClick={() => onSelect(g.variant)}
-            className="group flex flex-col rounded-2xl border border-gold/25 bg-sea-deep/55 p-6 text-left transition-all hover:-translate-y-1 hover:border-gold/60 hover:bg-sea-mid/70"
+            className="skin-overlay group flex flex-col rounded-lg p-5 text-left transition-transform hover:-translate-y-0.5"
           >
             <div className="flex items-center gap-4">
-              <div className="w-16 shrink-0 drop-shadow-lg transition-transform group-hover:scale-105">
+              <div className="w-14 shrink-0 transition-transform group-hover:scale-[1.04]">
                 <CardSprite card={g.art} />
               </div>
               <div>
-                <h2 className="font-display text-3xl text-cream">
+                <h2 className="font-display text-2xl text-cream">
                   {g.title}
                 </h2>
-                <p className="text-sm text-gold/80">{g.tagline}</p>
+                <p className="text-[12px] text-cream/65">{g.tagline}</p>
               </div>
             </div>
-            <ul className="mt-5 space-y-1.5 text-sm text-cream/70">
+            <ul className="mt-4 space-y-1 text-[12px] text-cream/65">
               {g.rules.map((r) => (
                 <li key={r} className="flex gap-2">
-                  <span className="text-gold">◆</span>
+                  <span className="text-gold-soft/70">·</span>
                   {r}
                 </li>
               ))}
             </ul>
-            <span className="mt-6 inline-block rounded-full bg-gold px-5 py-2 text-center text-sm font-semibold text-sea-deep transition-colors group-hover:bg-gold-bright">
+            <span className="mt-5 inline-block self-start rounded-full bg-gold/85 px-4 py-1.5 text-[12px] font-medium text-ink transition-colors group-hover:bg-gold-bright">
               Igraj {g.title}
             </span>
           </button>
         ))}
       </div>
 
-      <p className="mt-10 text-center text-xs text-cream/40">
-        Online multiplayer dolazi kasnije — logika igre je već odvojena
-        za to.
+      <p className="mt-8 text-center text-[11px] text-cream/35">
+        Logika je spremna za online — multiplayer dolazi kasnije.
       </p>
     </div>
   );
