@@ -1,0 +1,107 @@
+@import "tailwindcss";
+
+/*
+ * Mediterranean / Dalmatian premium theme.
+ * Deep sea navy background, brushed-gold accents, no cartoon styling.
+ */
+:root {
+  --sea-deep: #06243b;
+  --sea-mid: #0b3a5b;
+  --sea-light: #14507a;
+  --gold: #d9b46a;
+  --gold-bright: #f0d28a;
+  --gold-dim: #9c8044;
+  --cream: #f5ecd8;
+  --felt: #0d4a3f;
+  --felt-edge: #06302a;
+  --danger: #d9534f;
+}
+
+@theme inline {
+  --color-sea-deep: var(--sea-deep);
+  --color-sea-mid: var(--sea-mid);
+  --color-sea-light: var(--sea-light);
+  --color-gold: var(--gold);
+  --color-gold-bright: var(--gold-bright);
+  --color-cream: var(--cream);
+  --color-felt: var(--felt);
+  --font-display: var(--font-display), Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-sans), system-ui, sans-serif;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  color: var(--cream);
+  background:
+    radial-gradient(
+      ellipse at 50% 0%,
+      var(--sea-light) 0%,
+      var(--sea-mid) 38%,
+      var(--sea-deep) 100%
+    );
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Card deal-in animation. Delay is set inline per card index. */
+@keyframes dealIn {
+  from {
+    opacity: 0;
+    transform: translateY(-46px) rotate(-8deg) scale(0.82);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) rotate(0) scale(1);
+  }
+}
+
+@keyframes playToTable {
+  from {
+    opacity: 0;
+    transform: translateY(26px) scale(0.86);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-deal {
+  animation: dealIn 0.42s cubic-bezier(0.2, 0.8, 0.3, 1) backwards;
+}
+.animate-play {
+  animation: playToTable 0.32s ease-out backwards;
+}
+.animate-fade-up {
+  animation: fadeUp 0.4s ease-out backwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-deal,
+  .animate-play,
+  .animate-fade-up {
+    animation: none;
+  }
+}
+
+.text-gold-gradient {
+  background: linear-gradient(180deg, var(--gold-bright), var(--gold-dim));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
